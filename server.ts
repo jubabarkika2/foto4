@@ -31,8 +31,17 @@ async function startServer() {
       const smtpUser = customSmtp?.user || process.env.SMTP_USER;
       const smtpPass = customSmtp?.pass || process.env.SMTP_PASS;
       const smtpSecureValue = customSmtp?.secure !== undefined ? customSmtp.secure : process.env.SMTP_SECURE;
-      const smtpSecure = smtpSecureValue === true || smtpSecureValue === "true";
-      const smtpFrom = process.env.SMTP_FROM || `Câmera Direct Mail <${smtpUser || "noreply@example.com"}>`;
+      
+      // Auto-detect secure state based on standard port convention to prevent wrong version SSL errors
+      let smtpSecure = smtpSecureValue === true || smtpSecureValue === "true" || smtpSecureValue === "YES";
+      const numericPort = parseInt(smtpPort || "");
+      if (numericPort === 587 || numericPort === 25 || numericPort === 2525) {
+        smtpSecure = false; // Port 587 requires STARTTLS (secure: false) in Nodemailer
+      } else if (numericPort === 465) {
+        smtpSecure = true;  // Port 465 requires SMTPS (secure: true) in Nodemailer
+      }
+
+      const smtpFrom = process.env.SMTP_FROM || smtpUser || "noreply@example.com";
 
       const hasSmtp = smtpHost && smtpPort && smtpUser && smtpPass;
 
