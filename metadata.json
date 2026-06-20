@@ -1,0 +1,6 @@
+{
+  "name": "Câmera Direct Mail",
+  "description": "Tire fotos ou grave vídeos com zoom inteligente de até 15x e envie instantaneamente para qualquer e-mail configurado.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
